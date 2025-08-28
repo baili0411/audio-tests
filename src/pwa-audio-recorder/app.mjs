@@ -72,7 +72,8 @@ function getSelectedRecordingConfig() {
 async function init() {
   /* global mdc */ // Material Components Web scripts are loaded in index.html.
   new mdc.iconButton.MDCIconButtonToggle(recordButton);
-  recordButton.onclick = () => startRecording({storage});
+  startRecording({storage});
+  // recordButton.onclick = () => startRecording({storage});
   populateRecordingConfigurations();
 
   const storage = new IndexedDBStorage();
