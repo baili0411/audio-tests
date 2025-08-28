@@ -168,37 +168,37 @@ async function startRecording({storage}) {
     });
   };
 
-  visualizeRecording({stream, outlineIndicator, waveformIndicator});
+  // visualizeRecording({stream, outlineIndicator, waveformIndicator});
 }
 
-/** Visualizes the audio with a waveform and a loudness indicator. */
-function visualizeRecording({stream, outlineIndicator, waveformIndicator}) {
-  // Use AnalyserNode to compute the recorded audio's power to visualize
-  // loudness.
-  const audioCtx = new AudioContext();
-  const source = audioCtx.createMediaStreamSource(stream);
-  const analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 32; // Smallest possible FFT size for cheaper computation.
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
+// /** Visualizes the audio with a waveform and a loudness indicator. */
+// function visualizeRecording({stream, outlineIndicator, waveformIndicator}) {
+//   // Use AnalyserNode to compute the recorded audio's power to visualize
+//   // loudness.
+//   const audioCtx = new AudioContext();
+//   const source = audioCtx.createMediaStreamSource(stream);
+//   const analyser = audioCtx.createAnalyser();
+//   analyser.fftSize = 32; // Smallest possible FFT size for cheaper computation.
+//   const bufferLength = analyser.frequencyBinCount;
+//   const dataArray = new Uint8Array(bufferLength);
 
-  source.connect(analyser);
+//   source.connect(analyser);
 
-  waveformIndicator.drawCenterLine();
+//   waveformIndicator.drawCenterLine();
 
-  /** Repeatedly draws the waveform and loudness indicator. */
-  function draw() {
-    if (!stream.active) {
-      return; // Stop drawing loop once the recording stopped.
-    }
+//   /** Repeatedly draws the waveform and loudness indicator. */
+//   function draw() {
+//     if (!stream.active) {
+//       return; // Stop drawing loop once the recording stopped.
+//     }
 
-    analyser.getByteFrequencyData(dataArray);
-    const loudness = visualize.calculateLoudness(dataArray);
-    outlineIndicator.show(loudness);
-    waveformIndicator.show(loudness);
+//     analyser.getByteFrequencyData(dataArray);
+//     const loudness = visualize.calculateLoudness(dataArray);
+//     outlineIndicator.show(loudness);
+//     waveformIndicator.show(loudness);
 
-    requestAnimationFrame(draw);
-  }
+//     requestAnimationFrame(draw);
+//   }
 
-  draw();
-}
+//   draw();
+// }
