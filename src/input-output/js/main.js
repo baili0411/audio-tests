@@ -105,10 +105,20 @@ function handleError(error) {
   console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
 
+const echoCancellationCheckbox = document.querySelector('input#echoCancellation');
+const noiseSuppressionCheckbox = document.querySelector('input#noiseSuppression');
+const autoGainControlCheckbox = document.querySelector('input#autoGainControl');
+let openEffectsKey = undefined;
+
 function start() {
   const audioSource = audioInputSelect.value || undefined;
-  // Don't open the same devices again.
-  if (hasPermission && openMic == audioSource) {
+  const echoCancellation = Boolean(echoCancellationCheckbox && echoCancellationCheckbox.checked);
+  const noiseSuppression = Boolean(noiseSuppressionCheckbox && noiseSuppressionCheckbox.checked);
+  const autoGainControl = Boolean(autoGainControlCheckbox && autoGainControlCheckbox.checked);
+  const effectsKey = `${echoCancellation}-${noiseSuppression}-${autoGainControl}`;
+
+  // Don't open the same devices and effects again.
+  if (hasPermission && openMic == audioSource && openEffectsKey == effectsKey) {
     return;
   }
   // Close existng streams.
@@ -118,22 +128,28 @@ function start() {
     });
     openCamera = undefined;
     openMic = undefined;
+    openEffectsKey = undefined;
   }
   const constraints = {
     audio: {
-      autoGainControl: false,
-      echoCancellation: false,
-      noiseSuppression: false,
+      deviceId: audioSource ? {exact: audioSource} : undefined,
+      autoGainControl,
+      echoCancellation,
+      noiseSuppression,
     },
   };
   console.log('start', constraints);
   if (!hasPermission || hasCamera || hasMic) {
+    openEffectsKey = effectsKey;
     navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
   }
 }
 
 audioInputSelect.onchange = start;
 audioOutputSelect.onchange = changeAudioDestination;
+if (echoCancellationCheckbox) echoCancellationCheckbox.onchange = start;
+if (noiseSuppressionCheckbox) noiseSuppressionCheckbox.onchange = start;
+if (autoGainControlCheckbox) autoGainControlCheckbox.onchange = start;
 navigator.mediaDevices.ondevicechange = getDevices;
 
 getDevices();

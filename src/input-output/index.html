@@ -62,6 +62,12 @@
         <label for="audioOutput">Audio output destination: </label><select id="audioOutput"></select>
     </div>
 
+    <div class="select">
+        <label><input type="checkbox" id="echoCancellation"> echoCancellation</label>
+        <label><input type="checkbox" id="noiseSuppression"> noiseSuppression</label>
+        <label><input type="checkbox" id="autoGainControl"> autoGainControl</label>
+    </div>
+
     <audio id="audio" playsinline autoplay></audio>
 
     <p><b>Note:</b> If you hear a reverb sound your microphone is picking up the output of your
